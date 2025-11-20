@@ -1,9 +1,4 @@
-### Remember
-
-* Never generate code until you ask and I approve.
-* Be brief in your responses.  
-* Do not make up URLs or API keys. Always ask me for them.
-
+# Context
 ### Product User story
 As an avid cyclist, I want to generate a poster-sized image of my tracked rides superimposed on a map so that I can enjoy a souvenir of the riding season.
 
@@ -22,7 +17,7 @@ Generate a high-resolution map image by submitting a .geojson file to an online 
    * **Area:** center of the map in the image  
    * **Resolution:** image size should be 4096x4096
 
-### Methodology
+# Methodology
 Build iteratively, following a specific sprint plan. Build on the code from our previous sprints. Refactor as needed.
 
 | Sprint | Title | Goal(s) | Design Goal | Key Tasks |
@@ -33,5 +28,19 @@ Build iteratively, following a specific sprint plan. Build on the code from our 
 | **4** | Image Resolution | Capabilities customize how the routes are rendered Confirm can set parameters for high-resolution (\>4k) image, route colour, map type, etc. | **Parameterization:** Make the core function flexible and reusable. | 1\. Add to config: map styling properties (e.g.  height=3000, width=4000, scaleFactor=2) route styling properties:LINE_COLOR, LINE_WIDTH, LINE_OPACITY  2\. Modify generate_map_from_geojson() to  look for optional parameters from the config  use these config values when building the request body (consult Geoapify’s format for [map style customization options](https://apidocs.geoapify.com/playground/static-maps/?mapStyle=osm-bright&width=600&height=400&format=jpeg&lat=43.682203&lng=-79.453447&zoom=10.6912&pitch=0&bearing=0#:~:text=map%20style%20customization%20options)) **Test:** Run the script with the data from Sprint 2, save as sprint4\_routes.png, and display the image (or location where saved). Verify the output matches the desired styling |
 | **5** | CLI & Robustness | A finished, reusable, and robust CLI tool | **CLI & Error Handling** | 1\. Add CLI arguments (e.g., argparse) for: --url (replaces hardcoded GEOJSON\_URL)     --output (defines save path) 2\. Remove GEOJSON\_URL from config. 3\. Implement specific error handling:     Network/Connection errors HTTP status codes (401, 404, 5xx) File save permissions |
 
-**Do not write the entire script at once**.  For each sprint, write only the code required to complete that sprint's tasks. Do not add features from future sprints.  
+# Sprint branch workflow
+* At the start of the sprint, switch to a new branch (from main)  
+* Throughout the sprint commit changes to that branch  
+* End of the sprint  
+* Push final commits  
+* Open a Pull Request  
+* Merge the branch into main on GitHub  
+* Delete the branch
+
+# Collaboration
+* Never generate code until you ask and I approve.
+* Be brief in your responses.  
+* Always ask me when you are unsure of something.  Do not make up URLs or API keys. 
+* **Do not write the entire script at once**.  For each sprint, write only the code required to complete that sprint's tasks. Do not add features from future sprints.  
+
 
