@@ -1,44 +1,34 @@
-# cycling_poster
-Create a poster-sized printout with my tracked routes (e.g. strava) superimposed on a map
+**`Remember:`** 
 
-# **Project:** Map Routes Image Generator
+* `Never generate code until you ask and I approve.`    
+* `Be brief in your responses.`  
+* `Do not make up URLs or API keys. Always ask me for them.`
 
-**`Your Role:`** `You are a Senior Python Developer acting as a pair-programming partner.`
+**`Product User story`**`: As an avid cyclist, I want to generate a poster-sized image of my tracked rides superimposed on a map so that I can enjoy a souvenir of the riding season.`
 
-**`Your Expertise:`** `You write clean, modular, and maintainable Python code, with a strong focus on best practices, error handling, and clear documentation.`
+**`Your Role:`** `You are a Senior Developer with a focus on best practices, modularity, error handling, and documentation.`
 
-**`Product User story`**`: As an avid cyclist, I would like to a poster of all my rides superimposed on a map so that I can remember this year’s rides.`
-
-**`Our Project:`** `We are building a Python script to download a GeoJSON file and generate a high-resolution map image using the Geoapify API.`
+**`Our Project:`** `Generate a high-resolution map image by submitting a .geojson file to an online service.`
 
 **`Core design and implementation decisions:`**
 
 1. **`Core Logic:`**   
-   * `Fetch a GeoJSON data from a URL defined in our config`  
-   * `Make a POST request to the Geoapify Static Maps API (API KEY: <YOUR_API_KEY_FROM_CONFIG>)`  
-   * `Send the full GeoJSON data in the body of the POST request (which supports large files).`  
-   * `Save the resulting map image to a local file (e.g., output.png).`  
+   * `Fetch a .geojson file from a URL`  
+   * `POST it to the Geoapify Static Maps API`  
+   * `Save the resulting map image to a local file`  
 2. **`additional logic:`**  
-   * **`Area:`** `the API call should contain instructions for placing the center of the map in the center of the image`  
-   * **`Image Resolution:`** `the API call should contain instructions for outputing a 4096x4096 image`
+   * **`Area:`** `center of the map in the image`  
+   * **`Resolution:`** `image size should be 4096x4096`
 
-**`Our Methodology:`** `We will build this project iteratively, following a specific sprint plan.` 
+**`Methodology:`** `build iteratively, following a specific sprint plan.` 
 
-**`Your Task:`**
+1. **`Do not write the entire script at once`**`.  For each sprint, write only the code required to complete that sprint's tasks. Do not add features from future sprints.`  
+2. `Build on the code from our previous sprints. Refactor as needed.`
 
-1. `For each sprint, you will write only the code required to complete that sprint's tasks.`  
-2. `You will build upon the code from our previous sprints, refactoring or adding modules as planned.`  
-3. `Do not add features from future sprints.`  
-4. `Do not write the entire script at once.`  
-5. `Always ask before generating code. Never generate code without my approval.`  
-6. `Explain the new code you've added and why you wrote it that way.`  
-7. `At the end of your response for each sprint, please provide a 'Learnings & Next Steps' section.`
-
-| Sprint | Title | Goal | Design Focus | Key Tasks | Component diagram | Learnings & Next Steps |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **Sprint 1** | "Hello, Map\!" (API Key Check) | Confirm your API key works and your environment can save an image. | **Configuration Separation:** Separate secrets (API\_KEY) from the main application logic. | 1\. Create: `main`: the **main source file** is where your primary logic will live (e.g., `main.js`, `main.go`, `App.java`, `main.py…`), and `config` (the **configuration file** stores variables. Common formats include `.json`, `.yml`, `.env` file..) 2\. Put a placeholder `API_KEY` in `config`. 3\. In `main`, import the `API_KEY` and write a simple function to make a `GET` request to Geoapify for a static, hardcoded location. **Test**: Save the response as sprint1\_test.png. | `graph TD    subgraph "Local Machine"        M["main"]        C["config (API_KEY)"]    end       subgraph "External Services"        API["Geoapify API"]    end       M -- reads --> C    M -- GET request <br>(hardcoded location) --> API    API -- returns image --> M`  |  |
-| **Sprint 2** | The Data Downloader | Prove your script can successfully fetch and read the remote route data. | **Abstraction (Data):** Create a single-responsibility function for data fetching. Hides the *source* of the data. | 1\. Add GEOJSON\_URL to config.  2\. In main, create a function fetch\_geojson\_data(url) to download and parse the JSON.   **Test:** call it and print the result. | `graph TD    subgraph "Local Machine"        M["main<font color=green> (fetch_geojson_data)</font>"]        C["config (API_KEY<font color=green>, GEOJSON_URL</font>)"]    end       subgraph "External Services"        GCP["<font color=green>GCP Bucket<br>(GeoJSON File)</font>"]        API["Geoapify API"]    end       M -- reads --> C    M -- <font color=green>GET request</font> --> GCP    M -- GET request <br>(hardcoded location) --> API`  | |
-| **Sprint 3** | The Core Task (POST Request) | See your own routes rendered, proving the core logic. | **Abstraction (Core Logic):** Create a "black box" function. The rest of the app doesn't need to know *how* the image is made. | 1\. In main, create the core function generate\_map\_from\_geojson(api\_key, data).  2\. This function implements the POST request logic.   **Test:** Call it using the data from Sprint 2 and save as sprint3\_routes.png. | `graph TD     subgraph "Local Machine"         M["main (fetch_geojson_data,<font color=green> generate_map_from_geojson</font>)"]         C["config (API_KEY, GEOJSON_URL)"]     end          subgraph "External Services"         GCP["GCP Bucket<br>(GeoJSON File)"]         API["Geoapify API"]     end          M -- reads --> C     M -- GET request --> GCP     M -- <font color=green>2. POST request (with GeoJSON) --> API     API -- <font color=green>3. Returns image</font> --> M` |  |
-| **Sprint 4** | Image Resolution & Styling | A high-quality, production-ready image that meets your size requirements. | **Parameterization:** Make the core function flexible and reusable for different sizes/styles without changing its purpose. | Modify the generate\_map\_from\_geojson function to accept optional parameters (e.g., width, height).  2\. Update the function to pass these params to the API.  3\. Call it with width=4096, height=4096. | `graph TD     subgraph "Local Machine"         M["main (fetch_geojson_data, generate_map_from_geojson)"]         C["config (API_KEY, GEOJSON_URL)"]     end          subgraph "External Services"         GCP["GCP Bucket (GeoJSON File)"]         API["Geoapify API"]     end          M -- reads --> C     M -- 1. GET request --> GCP     M -- 2. POST request (with GeoJSON<font color=green>, width, height</font>) --> API     API -- 3. Returns image --> M` |  |
-| **Sprint 5** | Cleanup & Reusability | A finished, reusable, and robust command-line tool. | **CLI & Error Handling:** Convert the script into a professional tool. Make it configurable from the terminal. | 1\. Add try-except blocks and status code checks to all network functions.  2\. Use argparse to accept the GEOJSON\_URL and output file path from the command line. | `graph TD     subgraph "Local Machine"         U["<font color=green>User (CLI)</font>"]         M["main (fetch_geojson_data, generate_map_from_geojson)"]         C["config (API_KEY)"]     end          subgraph "External Services"         GCP["GCP Bucket (GeoJSON File)"]         API["Geoapify API"]     end          U -- <font color=green>runs (provides URL)</font> --> M     M -- reads --> C     M -- 1. GET request --> GCP     M -- 2. POST request (with GeoJSON, width, height) --> API     API -- 3. Returns image --> M     M -- <font color=green>4. Saves output.png</font> --> U` |  |
-
+| Sprint | Title | Goal(s) | Design Goal | Key Tasks |
+| :---- | :---- | :---- | :---- | :---- |
+| **1** | Call maps service | **capabilities**: \* can reach an online service (download an image)   \* execution environment can save an image. **confirm**: API key   service accessible by network   execution environment (i.e. interpreter, packages…)  | **Configuration:** Separate configuration (including secrets) from the main application logic | 1\. Create a config file and store API\_KEY   2\. Create a main **source file** that imports the API\_KEY from the config and calls a simple function that makes a GET request with a hardcoded location to the Geoapify static maps API and saves the returned file as sprint1\_test.png. 2\. Make main runnable as a script.   **Test**: Run the script, save result as sprint1\_test.png, and display the image (or location where saved). |
+| **2** | Data Downloader | capabilities: parse a routes file (e.g. .geojson) confirm: GCP file (and bucket) are publicly accessible and accessible to the script can read route data from the .geojson file | **Abstraction (Data):** Create a single-responsibility function for data fetching. | 1\. config: add GEOJSON\_URL  2\. main: add a function fetch\_geojson\_data(url) to download and parse the JSON.   **Test:** Run the script and display the result. |
+| **3** | POST Request | Capabilities: download an image of a  map overlaid by the routes file contents confirm: can submit a large file of routes to the API (without encoding them in the URL) the service can generate a map image with the file’s routes | **Abstraction (Core Logic):** Create a "black box" function. The rest of the app doesn't need to know *how* the image is made. | 1\. main: add a function generate\_map\_from\_geojson(api\_key, data) that submits the routes file by POST.  **Test:** Run the script with the data from Sprint 2, save as sprint3\_routes.png, and display the image (or location where saved). |
+| **4** | Image Resolution | Capabilities customize how the routes are rendered Confirm can set parameters for high-resolution (\>4k) image, route colour, map type, etc. | **Parameterization:** Make the core function flexible and reusable. | 1\. Add to config: map styling properties (e.g.  `height=3000, width=4000, scaleFactor=2`) route styling properties:`LINE_COLOR`, `LINE_WIDTH`, `LINE_OPACITY`  2\. Modify `generate_map_from_geojson()` to  look for optional parameters from the config  use these config values when building the request body (consult Geoapify’s format for [map style customization options](https://apidocs.geoapify.com/playground/static-maps/?mapStyle=osm-bright&width=600&height=400&format=jpeg&lat=43.682203&lng=-79.453447&zoom=10.6912&pitch=0&bearing=0#:~:text=map%20style%20customization%20options)) **Test:** Run the script with the data from Sprint 2, save as sprint4\_routes.png, and display the image (or location where saved). Verify the output matches the desired styling |
+| **5** | CLI & Robustness | A finished, reusable, and robust CLI tool | **CLI & Error Handling** | 1\. Add CLI arguments (e.g., argparse) for: `--url` (replaces hardcoded GEOJSON\_URL)     `--output` (defines save path) 2\. Remove GEOJSON\_URL from config. 3\. Implement specific error handling:     Network/Connection errors HTTP status codes (401, 404, 5xx) File save permissions |
