@@ -115,7 +115,7 @@ def apply_style_to_geojson(data):
             
     return data
 
-def generate_map_from_geojson(api_key, data, width=800, height=600, scale_factor=1):
+def generate_map_from_geojson(api_key, data, width=800, height=600, scale_factor=1, style=None, zoom=None, pitch=None, bearing=None):
     """
     Generates a static map image from GeoJSON data using Geoapify Static Maps API.
     
@@ -125,6 +125,10 @@ def generate_map_from_geojson(api_key, data, width=800, height=600, scale_factor
         width: Image width in pixels (default: 800)
         height: Image height in pixels (default: 600)
         scale_factor: Scale factor for higher resolution (1 or 2, default: 1)
+        style: Map style (optional, defaults to config.STYLE)
+        zoom: Zoom level (optional, defaults to config.ZOOM)
+        pitch: Pitch angle (optional, defaults to config.PITCH)
+        bearing: Bearing angle (optional, defaults to config.BEARING)
         
     Returns:
         bytes: Image content if successful, None otherwise
@@ -132,10 +136,21 @@ def generate_map_from_geojson(api_key, data, width=800, height=600, scale_factor
     Raises:
         requests.exceptions.HTTPError: HTTP errors from API
     """
+    # Use provided values or fall back to config defaults
+    style = style if style is not None else config.STYLE
+    zoom = zoom if zoom is not None else getattr(config, 'ZOOM', None)
+    pitch = pitch if pitch is not None else getattr(config, 'PITCH', None)
+    bearing = bearing if bearing is not None else getattr(config, 'BEARING', None)
+
     effective_resolution = f"{width * scale_factor}x{height * scale_factor}"
     print(f"Generating map from GeoJSON data ({width}x{height}, scale={scale_factor}, effective={effective_resolution})...")
-    print(f"Using map style: {config.STYLE}")
-    print(f"Using bearing: {config.BEARING}")
+    print(f"Using map style: {style}")
+    if bearing is not None:
+        print(f"Using bearing: {bearing}")
+    if pitch is not None:
+        print(f"Using pitch: {pitch}")
+    if zoom is not None:
+        print(f"Using zoom: {zoom}")
     
     # API key goes in the URL, GeoJSON goes in the body
     url = f"https://maps.geoapify.com/v1/staticmap?apiKey={api_key}"
@@ -146,9 +161,16 @@ def generate_map_from_geojson(api_key, data, width=800, height=600, scale_factor
         "width": width,
         "height": height,
         "scaleFactor": scale_factor,
-        "style": config.STYLE,
-        "bearing": config.BEARING
+        "style": style
     }
+
+    # Add optional parameters if they exist
+    if bearing is not None:
+        request_body["bearing"] = bearing
+    if pitch is not None:
+        request_body["pitch"] = pitch
+    if zoom is not None:
+        request_body["zoom"] = zoom
     
     # Add style customization if configured
     if hasattr(config, 'STYLE_CUSTOMIZATION') and config.STYLE_CUSTOMIZATION:

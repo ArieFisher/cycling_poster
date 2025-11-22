@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 .DS_Store
-config.py
+app_secrets.py
 *.png
 .gemini/
 *.geojson
