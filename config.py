@@ -8,11 +8,11 @@ except ImportError:
 # Default Map Parameters
 STYLE = "klokantech-basic"
 SCALE_FACTOR = 2
-WIDTH = 3000
-HEIGHT = 4000
-ZOOM = 10.5
-PITCH = 43
-BEARING = 163
+WIDTH = 4000
+HEIGHT = 3000
+ZOOM = 14
+PITCH = 45
+BEARING = 160
 
 # Route Styling
 LINE_COLOR = "#ff920d"
